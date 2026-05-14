@@ -1,0 +1,16 @@
+<%- include('../partials/header') %>
+
+<main>
+    <h1><%= title %></h1>
+    <p>Something went wrong on our servers.</p>
+    
+    <% if (NODE_ENV !== 'production') { %>
+        <div style="background: #f4f4f4; padding: 15px; margin-top: 20px; text-align: left;">
+            <h3>Error Details (Development Only):</h3>
+            <p><strong>Message:</strong> <%= error %></p>
+            <pre><code><%= stack %></code></pre>
+        </div>
+    <% } %>
+</main>
+
+<%- include('../partials/footer') %>
