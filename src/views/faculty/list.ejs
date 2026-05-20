@@ -1,23 +1,21 @@
 <%- include('../partials/header') %>
 <main>
-    <h1>Faculty Directory</h1>
-    <p>Browse our faculty members and click on any name to view their contact information and details.</p>
-    
-    <div class="sort-options">
-        <span>Sort by: </span>
-        <a href="/faculty" class="<%= currentSort === 'name' ? 'active' : '' %>">Name</a>
-        <a href="/faculty?sort=department" class="<%= currentSort === 'department' ? 'active' : '' %>">Department</a>
-        <a href="/faculty?sort=title" class="<%= currentSort === 'title' ? 'active' : '' %>">Title</a>
-    </div>
-    
+    <h1>Faculty List</h1>
+    <p>Check out our faculty and click on any of them to see details.</p>
+
     <div class="faculty-list">
-        <% faculty.forEach(member => { %>
-            <div class="faculty-card">
-                <h3><a href="/faculty/<%= member.id %>"><%= member.name %></a></h3>
-                <p class="faculty-title"><%= member.title %></p>
-                <p class="faculty-department"><%= member.department %></p>
-            </div>
-        <% }); %>
+        <div class="sort-options">
+            <span>Sort by: </span>
+            <a href="/faculty?sort=name" class="<%= currentSort === 'name' ? 'active' : '' %>">Name</a>
+            <a href="/faculty?sort=department" class="<%= currentSort === 'department' ? 'active' : '' %>">Department</a>
+            <a href="/faculty?sort=title" class="<%= currentSort === 'title' ? 'active' : '' %>">Title</a>
+        </div>
+
+        <ul class="instructor">
+            <% Object.values(faculty).forEach(instructor => { %>
+                <li><a href="/faculty/<%= instructor.slug %>"><%= instructor.firstName %> <%= instructor.lastName %> - <%= instructor.title %>, <%= instructor.department %></a></li>
+            <% }); %>
+        </ul>
     </div>
 </main>
 <%- include('../partials/footer') %>

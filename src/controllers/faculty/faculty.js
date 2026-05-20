@@ -1,32 +1,34 @@
 // 1. Import the data functions from our Faculty Model
-import { getFacultyById, getSortedFaculty } from '../../models/faculty/faculty.js';
+import { getFacultyBySlug, getSortedFaculty } from '../../models/faculty/faculty.js';
 
 // 2. Route handler for the main faculty list page (/faculty)
-const facultyListPage = (req, res) => {
+const facultyListPage = async (req, res) => {
     // We'll set up sorting using a query parameter. If none is provided, default to 'name'
-    const sortBy = req.query.sort || 'name'; 
+    const sortBy = req.query.sort || 'department'; // You can change this default to 'name' if you prefer
     
     // Get the array of faculty from the Model
-    const facultyList = getSortedFaculty(sortBy);
+    const facultyMembers = await getSortedFaculty(sortBy);
 
     // Send that data to the View
     res.render('faculty/list', {
         title: 'Faculty Directory',
-        faculty: facultyList,
+        faculty: facultyMembers,
         currentSort: sortBy // We'll pass this so the view knows which sort is active
     });
 };
 
 // 3. Route handler for individual faculty profiles (/faculty/:facultyId)
-const facultyDetailPage = (req, res, next) => {
+const facultyDetailPage =  async (req, res, next) => {
     // Grab the ID from the URL (e.g., 'brother-jack')
-    const facultyId = req.params.facultyId;
+    const facultySlug = req.params.facultySlug;
     
     // Ask the Model to find this specific faculty member
-    const facultyMember = getFacultyById(facultyId);
+    const facultyMember = await getFacultyBySlug(facultySlug);
+    console.log(facultyMember); // Debugging line to check what we got back from the Model
+
 
     // 4. Proper error handling for invalid IDs
-    if (!facultyMember) {
+    if (!Object.keys(facultyMember).length === 0) {
         // If the Model returns null, trigger a 404 error (which will show your nice 404.ejs page!)
         const error = new Error('Faculty member not found');
         error.status = 404;
