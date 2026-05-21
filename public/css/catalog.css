@@ -1,44 +1,133 @@
-.catalog-header {
-    max-width: 1000px;
-    margin: 0 auto 2rem auto;
+.catalog-header, .course-header {
+    max-width: 800px;
+    margin: 0 auto 3rem auto;
     text-align: center;
 
     h1 {
-        color: #2c5aa0;
-        margin-bottom: 0.5rem;
+        color: #1e3a8a;
+        font-size: 2.25rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        letter-spacing: -0.025em;
     }
 
     p {
-        color: #666;
-        font-size: 1rem;
+        color: #64748b;
+        font-size: 1.1rem;
+    }
+    
+    .course-meta {
+        font-weight: 600;
+        color: #2563eb;
+        margin-top: 0.25rem;
+        margin-bottom: 1rem;
     }
 }
 
-.catalog-controls {
+/* Beautiful grid cards for catalog.ejs */
+.course-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.75rem;
+    margin-top: 2rem;
+}
+
+.course-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid rgba(0, 0, 0, 0.05);
     display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-bottom: 2rem;
+    flex-direction: column;
 
-    input,
-    select {
-        padding: 0.75rem;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        font-size: 1rem;
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     }
 
-    input {
-        min-width: 250px;
+    h3 {
+        margin-bottom: 0.5rem;
+        font-size: 1.3rem;
+        
+        a {
+            color: #1e3a8a;
+            text-decoration: none;
+            font-weight: 700;
+            
+            &:hover {
+                color: #2563eb;
+            }
+        }
     }
 
-    select {
-        background: white;
+    .course-id {
+        color: #2563eb;
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.75rem;
+    }
+
+    .course-description {
+        color: #475569;
+        font-size: 0.95rem;
+        line-height: 1.5;
     }
 }
 
-.catalog-grid {
+/* Sorting controls header */
+.sections-header {
+    max-width: 800px;
+    margin: 3rem auto 1.5rem auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 0.75rem;
+
+    h2 {
+        color: #1e3a8a;
+        font-size: 1.5rem;
+    }
+}
+
+.sort-options {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    span {
+        font-size: 0.9rem;
+        color: #64748b;
+        margin-right: 0.25rem;
+    }
+
+    a {
+        color: #475569;
+        text-decoration: none;
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+
+        &:hover {
+            background: #e2e8f0;
+            color: #1e3a8a;
+        }
+
+        &.active {
+            background: #2563eb;
+            color: white;
+        }
+    }
+}
+
+/* Sections layout for course-detail.ejs */
+.section-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 1.5rem;
@@ -46,37 +135,30 @@
     margin: 0 auto;
 }
 
-.catalog-card {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 1.5rem;
+.section-card {
     background: white;
-    transition: box-shadow 0.2s ease;
+    border-radius: 8px;
+    padding: 1.25rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    border: 1px solid #e2e8f0;
 
-    &:hover {
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    .section-time {
+        font-weight: 700;
+        color: #1e3a8a;
+        margin-bottom: 0.5rem;
     }
-
-    h3 {
-        margin-top: 0;
-
-        a {
-            color: #2c5aa0;
-            text-decoration: none;
-
-            &:hover {
-                text-decoration: underline;
-            }
-        }
-    }
-
-    p {
-        color: #666;
-        margin: 0.5rem 0;
-    }
-
-    .catalog-meta {
+    
+    .section-room, .section-professor {
         font-size: 0.9rem;
-        color: #888;
+        color: #475569;
     }
+}
+
+/* Feedback message styling */
+.sort-message {
+    text-align: center;
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    font-style: italic;
 }

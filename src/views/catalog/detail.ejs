@@ -1,0 +1,49 @@
+<%- include('../partials/header') %>
+<main>
+    <div class="course-header">
+        <h1><%= course.name %></h1>
+        <p class="course-meta">
+            <%= course.course_code || course.courseCode %> • <%= course.credit_hours || course.creditHours %> credits
+        </p>
+        <p class="course-description"><%= course.description %></p>
+    </div>
+
+    <% if (queryParams.sort) { %>
+        <div class="sort-message">
+            <p>Currently sorted by: <%= queryParams.sort.charAt(0).toUpperCase() + queryParams.sort.slice(1) %></p>
+        </div>
+    <% } else { %>
+        <div class="sort-message">
+            <p>No sorting applied, using default sorting by time.</p>
+        </div>
+    <% } %>
+
+    <div class="sections">
+        <div class="sections-header">
+            <h2>Available Sections</h2>
+            <div class="sort-options">
+                <span>Sort by: </span>
+                <a href="/catalog/<%= course.slug %>" class="<%= currentSort === 'time' ? 'active' : '' %>">Time</a>
+                <a href="/catalog/<%= course.slug %>?sort=professor" class="<%= currentSort === 'professor' ? 'active' : '' %>">Professor</a>
+                <a href="/catalog/<%= course.slug %>?sort=room" class="<%= currentSort === 'room' ? 'active' : '' %>">Room</a>
+            </div>
+        </div>
+
+        <div class="section-list">
+            <% if (sections && Object.keys(sections).length > 0) { %>
+                <% Object.values(sections).forEach(section => { %>
+                    <div class="section-card">
+                        <div class="section-time"><%= section.time %></div>
+                        <div class="section-room">Room: <%= section.room %></div>
+                        <div class="section-professor">Instructor: <%= section.professor %></div>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <p class="no-sections" style="grid-column: 1/-1; text-align: center; color: #64748b; font-style: italic; padding: 2rem;">
+                    No sections are currently scheduled for this term.
+                </p>
+            <% } %>
+        </div>
+    </div>
+</main>
+<%- include('../partials/footer') %>
