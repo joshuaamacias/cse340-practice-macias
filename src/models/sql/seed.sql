@@ -8,6 +8,8 @@ DROP TABLE IF EXISTS catalog CASCADE;
 DROP TABLE IF EXISTS faculty CASCADE;
 DROP TABLE IF EXISTS courses CASCADE;
 DROP TABLE IF EXISTS departments CASCADE;
+DROP TABLE IF EXISTS enrollments CASCADE;
+DROP TABLE IF EXISTS students CASCADE;
 
 -- Create departments table
 CREATE TABLE departments (
@@ -59,6 +61,21 @@ CREATE TABLE catalog (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(course_slug, faculty_slug, time, room)
+);
+
+CREATE TABLE students (
+    id SERIAL PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    enrollment_date DATE DEFAULT CURRENT_DATE
+);
+
+CREATE TABLE enrollments (
+    id SERIAL PRIMARY KEY,
+    student_id INTEGER REFERENCES students(id) ON DELETE CASCADE,
+    course_name VARCHAR(100) NOT NULL,
+    enrollment_date DATE DEFAULT CURRENT_DATE
 );
 
 -- Insert departments
@@ -252,5 +269,31 @@ INSERT INTO catalog (course_slug, faculty_slug, time, room) VALUES
     ('intl-201', 'john-ivers', 'Mon Wed Fri 1:00-1:50', 'LA 301'),
     ('intl-301', 'john-ivers', 'Tue Thu 1:00-2:15', 'LA 302'),
     ('intl-401', 'john-ivers', 'Mon Wed 2:00-3:15', 'LA 303');
+
+
+INSERT INTO students (first_name, last_name, email)
+VALUES ('John', 'Doe', 'john.doe@email.com');
+
+INSERT INTO students (first_name, last_name, email)
+VALUES ('Jane', 'Smith', 'jane.smith@email.com');
+
+INSERT INTO students (first_name, last_name, email)
+VALUES ('Mike', 'Johnson', 'mike.johnson@email.com');
+
+INSERT INTO students (first_name, last_name, email)
+VALUES ('Sarah', 'Davis', 'sarah.davis@email.com');
+
+
+INSERT INTO enrollments (student_id, course_name)
+VALUES (1, 'Database Design');
+
+INSERT INTO enrollments (student_id, course_name)
+VALUES (1, 'Web Development');
+
+INSERT INTO enrollments (student_id, course_name)
+VALUES (2, 'Database Design');
+
+INSERT INTO enrollments (student_id, course_name)
+VALUES (3, 'Programming Fundamentals');
 
 COMMIT;
