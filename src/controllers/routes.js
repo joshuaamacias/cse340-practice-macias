@@ -5,6 +5,9 @@ import { homePage, aboutPage, demoPage, testErrorPage } from './index.js';
 // NEW: Import your faculty controllers
 import { facultyListPage, facultyDetailPage } from './faculty/faculty.js';
 import contactRoutes from './forms/contact.js';
+// NEW: Import registration routes
+import registrationRoutes from './forms/registration.js';
+
 
 // Create a new router instance
 const router = Router();
@@ -44,10 +47,19 @@ router.get('/faculty/:facultySlug', facultyDetailPage);
 // Demo page with special middleware
 router.get('/demo', addDemoHeaders, demoPage);
 
+// Add registration-specific styles to all registration routes
+router.use('/register', (req, res, next) => {
+    res.addStyle('<link rel="stylesheet" href="/css/registration.css">');
+    next();
+});
+
 // Route to trigger a test error
 router.get('/test-error', testErrorPage);
 
 // Contact form routes
 router.use('/contact', contactRoutes);
+
+// NEW: Registration routes
+router.use('/register', registrationRoutes);
 
 export default router;
