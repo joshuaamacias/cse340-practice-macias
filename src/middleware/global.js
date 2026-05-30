@@ -78,6 +78,11 @@ const addLocalVariables = (req, res, next) => {
     res.locals.bodyClass = randomTheme;    
 
     setHeadAssetsFunctionality(res); // Add head asset management functionality to res
+
+    res.locals.isLoggedIn = false;
+if (req.session && req.session.user) {
+    res.locals.isLoggedIn = true;
+}
     
     // Continue to the next middleware or route handler    
     next();
