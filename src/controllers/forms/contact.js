@@ -16,16 +16,17 @@ const showContactForm = (req, res) => {
 /**
  * Handle contact form submission with validation.
  * If validation passes, save to database and redirect.
- * If validation fails, log errors and redirect back to form.
+ * If validation fails, loop through errors and use flash messages.
  */
 const handleContactSubmission = async (req, res) => {
     // Check for validation errors
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-        // Log validation errors for developer debugging
-        console.error('Validation errors:', errors.array());
-        // Redirect back to form without saving
+        // Store each validation error as a separate flash message
+        errors.array().forEach(error => {
+            req.flash('error', error.msg);
+        });
         return res.redirect('/contact');
     }
 
@@ -35,11 +36,16 @@ const handleContactSubmission = async (req, res) => {
     try {
         // Save to database
         await createContactForm(subject, message);
-        console.log('Contact form submitted successfully');
-        // Redirect to responses page on success
-        res.redirect('/contact/responses');
+        
+        // Use a success flash message instead of printing logs
+        req.flash('success', 'Thank you for contacting us! We will respond soon.');
+        res.redirect('/contact');
     } catch (error) {
+        // Keep console.error for developer platform debugging
         console.error('Error saving contact form:', error);
+        
+        // Provide user-friendly fallback feedback via flash
+        req.flash('error', 'Unable to submit your message. Please try again later.');
         res.redirect('/contact');
     }
 };
@@ -68,18 +74,29 @@ const showContactResponses = async (req, res) => {
 router.get('/', showContactForm);
 
 /**
- * POST /contact - Handle contact form submission with validation
+ * POST /contact - Handle contact form submission with enhanced validation
  */
 router.post('/',
     [
         body('subject')
             .trim()
-            .isLength({ min: 2 })
-            .withMessage('Subject must be at least 2 characters'),
+            .isLength({ min: 2, max: 255 })
+            .withMessage('Subject must be between 2 and 255 characters')
+            .matches(/^[a-zA-Z0-9\s\-.,!?]+$/)
+            .withMessage('Subject contains invalid characters'),
         body('message')
             .trim()
-            .isLength({ min: 10 })
-            .withMessage('Message must be at least 10 characters')
+            .isLength({ min: 10, max: 2000 })
+            .withMessage('Message must be between 10 and 2000 characters')
+            .custom((value) => {
+                // Check for spam patterns (excessive repetition)
+                const words = value.split(/\s+/);
+                const uniqueWords = new Set(words);
+                if (words.length > 20 && uniqueWords.size / words.length < 0.3) {
+                    throw new Error('Message appears to be spam');
+                }
+                return true;
+            })
     ],
     handleContactSubmission
 );

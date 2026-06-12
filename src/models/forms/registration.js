@@ -2,8 +2,7 @@ import db from '../db.js';
 
 /**
  * Checks if an email address is already registered in the database.
- * 
- * @param {string} email - The email address to check
+ * * @param {string} email - The email address to check
  * @returns {Promise<boolean>} True if email exists, false otherwise
  */
 const emailExists = async (email) => {
@@ -16,8 +15,7 @@ const emailExists = async (email) => {
 
 /**
  * Saves a new user to the database with a hashed password.
- * 
- * @param {string} name - The user's full name
+ * * @param {string} name - The user's full name
  * @param {string} email - The user's email address
  * @param {string} hashedPassword - The bcrypt-hashed password
  * @returns {Promise<Object>} The newly created user record (without password)
@@ -34,8 +32,7 @@ const saveUser = async (name, email, hashedPassword) => {
 
 /**
  * Retrieves all registered users from the database.
- * 
- * @returns {Promise<Array>} Array of user records (without passwords)
+ * * @returns {Promise<Array>} Array of user records (without passwords)
  */
 const getAllUsers = async () => {
     const query = `
@@ -47,4 +44,58 @@ const getAllUsers = async () => {
     return result.rows;
 };
 
-export { emailExists, saveUser, getAllUsers };
+/** * Retrieve a single user by ID with role information 
+ * * @param {number} id - The user ID to look up
+ * @returns {Promise<Object|null>} The user record with roleName, or null if not found
+ */
+const getUserById = async (id) => {    
+    const query = `        
+        SELECT             
+            users.id,            
+            users.name,            
+            users.email,            
+            users.created_at,            
+            roles.role_name AS "roleName"        
+        FROM users        
+        INNER JOIN roles ON users.role_id = roles.id        
+        WHERE users.id = $1    
+    `;    
+    const result = await db.query(query, [id]);    
+    return result.rows[0] || null;
+};
+
+/** * Update a user's name and email 
+ * * @param {number} id - The ID of the user to update
+ * @param {string} name - The new name
+ * @param {string} email - The new email address
+ * @returns {Promise<Object|null>} The updated user record, or null
+ */
+const updateUser = async (id, name, email) => {    
+    const query = `        
+        UPDATE users         
+        SET name = $1, email = $2, updated_at = CURRENT_TIMESTAMP        
+        WHERE id = $3        
+        RETURNING id, name, email, updated_at    
+    `;    
+    const result = await db.query(query, [name, email, id]);    
+    return result.rows[0] || null;
+};
+
+/** * Delete a user account 
+ * * @param {number} id - The ID of the user to delete
+ * @returns {Promise<boolean>} True if a row was deleted, false otherwise
+ */
+const deleteUser = async (id) => {    
+    const query = 'DELETE FROM users WHERE id = $1';    
+    const result = await db.query(query, [id]);    
+    return result.rowCount > 0;
+};
+
+export { 
+    emailExists, 
+    saveUser, 
+    getAllUsers, 
+    getUserById, 
+    updateUser, 
+    deleteUser 
+};

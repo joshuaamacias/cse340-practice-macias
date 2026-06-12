@@ -17,6 +17,9 @@ import { caCert } from './src/models/db.js';
 
 import { startSessionCleanup } from './src/utils/session-cleanup.js';
 
+// flash import 
+import flash from './src/middleware/flash.js';
+
 /**
  * Server configuration
  */
@@ -76,6 +79,13 @@ app.use(addLocalVariables);
 
 // Start automatic session cleanup
 startSessionCleanup();
+
+// Flash message middleware (must come after session middleware)
+// Global middleware (sets res.locals variables)
+app.use(addLocalVariables);
+
+// Flash message middleware (must come after session and global middleware)
+app.use(flash);
 
 /**
  * Routes
